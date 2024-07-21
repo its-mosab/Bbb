@@ -18,3 +18,7 @@ bot.onText(/\/start/, (msg) => {
     };
     bot.sendMessage(chatId, 'اضغط على الزر لفتح التطبيق:', opts);
 });
+
+bot.on('message', (msg) => {
+    console.log(msg); // This will log all messages received by the bot, useful for debugging
+});
