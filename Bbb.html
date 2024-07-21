@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المفاوضات</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            transition: background-color 0.5s;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: background-color 0.5s, color 0.5s;
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+            justify-content: center;
+        }
+
+        .input-group input {
+            width: 60px;
+            text-align: center;
+            margin: 0 10px;
+        }
+
+        button {
+            background-color: black;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        button:hover {
+            background-color: #333;
+        }
+
+        .increment-btn, .decrement-btn {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 0 5px;
+        }
+
+        .increment-btn:hover, .decrement-btn:hover {
+            background-color: #333;
+        }
+
+        #recommendation {
+            font-size: 1.2em;
+        }
+
+        .input-group label {
+            margin-left: 10px;
+        }
+
+        .aggressive {
+            background-color: red;
+            color: red;
+        }
+
+        .flexible {
+            background-color: blue;
+            color: blue;
+        }
+
+        .protective {
+            background-color: green;
+            color: green;
+        }
+
+        .aggressive button, .aggressive .increment-btn, .aggressive .decrement-btn {
+            background-color: red;
+        }
+
+        .aggressive button:hover, .aggressive .increment-btn:hover, .aggressive .decrement-btn:hover {
+            background-color: red;
+        }
+
+        .flexible button, .flexible .increment-btn, .flexible .decrement-btn {
+            background-color: blue;
+        }
+
+        .flexible button:hover, .flexible .increment-btn:hover, .flexible .decrement-btn:hover {
+            background-color: blue;
+        }
+
+        .protective button, .protective .increment-btn, .protective .decrement-btn {
+            background-color: green;
+        }
+
+        .protective button:hover, .protective .increment-btn:hover, .protective .decrement-btn:hover {
+            background-color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <h1>المفاوضات</h1>
+        <form id="gameForm">
+            <div class="input-group">
+                <button type="button" class="decrement-btn" onclick="decrement('scissorsCount')">-</button>
+                <input type="number" id="scissorsCount" min="0" value="0" required oninput="calculateBestMove()">
+                <button type="button" class="increment-btn" onclick="increment('scissorsCount')">+</button>
+                <label>عدواني</label>
+            </div>
+
+            <div class="input-group">
+                <button type="button" class="decrement-btn" onclick="decrement('paperCount')">-</button>
+                <input type="number" id="paperCount" min="0" value="0" required oninput="calculateBestMove()">
+                <button type="button" class="increment-btn" onclick="increment('paperCount')">+</button>
+                <label>مرن</label>
+            </div>
+
+            <div class="input-group">
+                <button type="button" class="decrement-btn" onclick="decrement('rockCount')">-</button>
+                <input type="number" id="rockCount" min="0" value="0" required oninput="calculateBestMove()">
+                <button type="button" class="increment-btn" onclick="increment('rockCount')">+</button>
+                <label>حامي</label>
+            </div>
+
+            <button type="button" onclick="resetFields()">تصفير</button>
+        </form>
+        <p id="recommendation"></p>
+    </div>
+    <script>
+        function increment(id) {
+            const input = document.getElementById(id);
+            input.value = parseInt(input.value) + 1;
+            calculateBestMove();
+        }
+
+        function decrement(id) {
+            const input = document.getElementById(id);
+            if (parseInt(input.value) > 0) {
+                input.value = parseInt(input.value) - 1;
+                calculateBestMove();
+            }
+        }
+
+        function resetFields() {
+            document.getElementById('scissorsCount').value = 0;
+            document.getElementById('paperCount').value = 0;
+            document.getElementById('rockCount').value = 0;
+            document.getElementById('recommendation').innerText = '';
+            document.body.className = '';
+            document.getElementById('container').className = 'container';
+        }
+
+        function calculateBestMove() {
+            const rockCount = parseInt(document.getElementById('rockCount').value);
+            const paperCount = parseInt(document.getElementById('paperCount').value);
+            const scissorsCount = parseInt(document.getElementById('scissorsCount').value);
+            
+            const bestMove = getBestMove(rockCount, paperCount, scissorsCount);
+            document.getElementById('recommendation').innerText = 'أفضل حركة لك: ' + bestMove;
+            changeDesign(bestMove);
+        }
+
+        function getBestMove(rockCount, paperCount, scissorsCount) {
+            if (rockCount > paperCount && rockCount > scissorsCount) {
+                return 'مرن'; 
+            } else if (paperCount > rockCount && paperCount > scissorsCount) {
+                return 'عدواني';
+            } else {
+                return 'حامي';
+            }
+        }
+
+        function changeDesign(bestMove) {
+            document.body.className = '';
+            const container = document.getElementById('container');
+            container.className = 'container';
+
+            if (bestMove === 'عدواني') {
+                document.body.classList.add('aggressive');
+            } else if (bestMove === 'مرن') {
+                document.body.classList.add('flexible');
+            } else if (bestMove === 'حامي') {
+                document.body.classList.add('protective');
+            }
+        }
+    </script>
+</body>
+</html>
